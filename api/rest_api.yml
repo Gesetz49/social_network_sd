@@ -1,1 +1,121 @@
-
+openapi: "3.0.3"
+info: 
+  version: 1.0.0
+  title: Swagger VK API
+  license:
+    name: MIT
+  contact: 
+    email: dmtheory@gmail.com
+    name: Andrey
+servers: 
+    - url: http://localhost:4040/v1
+    - url: http://localhost:2000/v1
+    - url: http://localhost:2000/v2
+paths:
+    /friends:
+      get:
+        summary: Получить список друзей текущего пользователя
+        parameters: []
+        responses:
+          '200':
+            description: Список получен
+            content: 
+              application/json: 
+                schema:
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      id: 
+                        type: integer
+                      name: 
+                        type: string
+                    required: 
+                      - id
+                      - name
+          '400':
+              description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+          '429':
+              description: Превышен лимит запросов
+      post: 
+        summary: Добавление друга
+        requestBody:
+            required: true
+            content: 
+              application/json: 
+                schema:
+                    type: object
+                    properties:
+                      friend_id:
+                          type: integer
+                          example: 123456
+                    required:
+                        - friend_id
+        responses:
+            '201':
+                description: Друг успешно добавлен
+            '400':
+                description: Ошибка в данных
+            '401':
+                description: Пользователь не авторизован
+            '403':
+                description: Недостаточно прав
+            '404':
+                description: Пользователь не существует
+            '409':
+                description: Вы уже друзья
+            '429':
+                description: Превышен лимит запросов
+    /friends/{user_id}:
+      get:
+        summary: Получить список друзей определенного пользователя
+        parameters:
+          - name: user_id
+            in: path
+            required: true
+            schema:
+              type: integer
+              example: 444555666
+            description: Идентификатор пользователя
+        responses:
+          '200':
+            description: Список получен
+          '400':
+              description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+          '404':
+              description: Пользователь не существует
+          '429':
+              description: Превышен лимит запросов
+      delete:
+        summary: Удалить из друзей
+        parameters:
+          - name: user_id
+            in: path
+            required: true
+            schema:
+              type: integer
+              example: 123456
+            description: Идентификатор пользователя, которого нужно удалить из друзей
+        responses:
+          '200':
+            description: Друг удален
+          '400':
+              description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+          '404':
+              description: Пользователь не существует
+          '409':
+              description: Вы не друзья
+          '429':
+              description: Превышен лимит запросов
