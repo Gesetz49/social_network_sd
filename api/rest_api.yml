@@ -119,3 +119,89 @@ paths:
               description: Вы не друзья
           '429':
               description: Превышен лимит запросов
+    /page/{user_id}:
+      get:
+        summary: просмотр анкеты пользователя
+        parameters:
+          - name: user_id
+            in: path
+            required: true
+            schema:
+              type: integer
+              example: 77782819
+            description: Идентификатор пользователя
+        responses: 
+          '200':
+            description: анкета пользователя получена
+          '400':
+              description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+          '404':
+              description: Пользователь не существует
+          '429':
+              description: Превышен лимит запросов
+    /feed:
+      post: 
+        summary: Публикация поста в ленту
+        description: |
+          Пост должен содержать хотя бы одно из: текст или медиафайлы. 
+          Если оба поля пустые или отсутствуют, сервер вернёт 400 Bad Request.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    text:
+                        type: string
+                        example: Привет это мой первый пост
+                    media:
+                      type: array
+                      items:
+                        type: string 
+                      example: ["image1.jpg","image2.jpg"]
+        responses:
+          '201':
+            description: пост опубликован
+          '400':
+            description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+    /media:
+      post:
+        summary: Загрузка контента
+        requestBody: 
+          required: true
+          content:
+            multipart/form-data:
+              schema: 
+                type: object 
+                properties: 
+                  file:
+                    type: string 
+                    format: binary
+                required:
+                  - file
+        responses:
+          '201':
+            description: Контент успешно загружен
+            content:
+              application/json:
+                schema:
+                  type: object 
+                  properties: 
+                    media_id:
+                      type: string
+                      example: "abc123"
+                    media_url:
+                      type: string
+                      example: https//:image1.jpg
+                  required: 
+                    - media_url
+                    - media_id
