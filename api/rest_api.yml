@@ -15,7 +15,6 @@ paths:
     /friends:
       get:
         summary: Получить список друзей текущего пользователя
-        parameters: []
         responses:
           '200':
             description: Список получен
@@ -121,7 +120,7 @@ paths:
               description: Превышен лимит запросов
     /page/{user_id}:
       get:
-        summary: просмотр анкеты пользователя
+        summary: Просмотр анкеты пользователя
         parameters:
           - name: user_id
             in: path
@@ -166,7 +165,67 @@ paths:
                       example: ["image1.jpg","image2.jpg"]
         responses:
           '201':
-            description: пост опубликован
+            description: Пост опубликован
+            content: 
+              application/json: 
+                schema:
+                  type: object
+                  properties: 
+                    text:
+                      type: string 
+                      example: "Мы здесь живем"
+                    id:
+                      type: integer
+                      example: 1 
+                    media:
+                      type: array
+                      items: 
+                        type: string 
+                        example: ["img1.jpg", "img2.jpg"]
+                  required:
+                    - id
+          '400':
+            description: Ошибка в данных
+          '401':
+              description: Пользователь не авторизован
+          '403':
+              description: Недостаточно прав
+      get: 
+        summary: Получение ленты текущего пользователя
+        parameters:
+          - name: limit
+            in: query
+            schema: 
+              type: integer 
+              example: 20
+          - name: offset
+            in: query 
+            schema:
+              type: integer 
+              example: 0
+        responses:
+          '200':
+            description: Лента получена
+            content: 
+              application/json: 
+                schema:
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      text:
+                        type: string 
+                        example: "Мы здесь живем"
+                      id:
+                        type: integer
+                        example: 1 
+                      media:
+                        type: array
+                        items: 
+                          type: string 
+                          example: ["img1.jpg", "img2.jpg"]
+                    required:
+                      - id
           '400':
             description: Ошибка в данных
           '401':
@@ -201,7 +260,51 @@ paths:
                       example: "abc123"
                     media_url:
                       type: string
-                      example: https//:image1.jpg
+                      example: "https://example.com/uploads/abc12.jpg"
                   required: 
                     - media_url
                     - media_id
+    /feed/{user_id}:
+      get: 
+        summary: Просмотр ленты постов
+        parameters: 
+          - name: user_id
+            in: path
+            required: true
+            schema:
+              type: integer 
+              example: 1234567
+          - name: limit
+            in: query
+            schema:
+              type: integer
+              example: 0
+          - name: offset
+            in: query
+            schema:
+              type: integer 
+              example: 5
+        responses:
+          '200':
+            description: Посты получены
+            content: 
+              application/json: 
+                schema:
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      text:
+                        type: string 
+                        example: "Мы здесь живем"
+                      id:
+                        type: integer
+                        example: 1 
+                      media:
+                        type: array
+                        items: 
+                          type: string 
+                          example: ["img1.jpg", "img2.jpg"]
+                    required:
+                      - id
+
